@@ -1156,6 +1156,18 @@ class DockerSpawner(Spawner):
 
             obj = None
 
+        if obj and obj["Config"]["Image"] != image:
+            self.log.warning(
+                "Replacing %s previous image %s with new image %s: %s (id: %s)",
+                self.object_type,
+                obj["Config"]["Image"],
+                image,
+                self.object_name,
+                self.object_id[:7],
+            )
+            await self.remove_object()
+            obj = None
+
         if obj is None:
             obj = await self.create_object()
             self.object_id = obj[self.object_id_key]
